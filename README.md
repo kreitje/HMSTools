@@ -13,4 +13,4 @@ This class can compile / decompile xfdl files. XFDL files are similar to fillabl
 
 This class will take an entire directory of xml files and change them one at a time into their corresponding xfdl file.
 
-Current RubyGems version: 0.0.2
+__Current RubyGems Version__: 0.0.2
