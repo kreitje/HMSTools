@@ -55,6 +55,15 @@ module HMSTools
 			@total = @total.to_i
 		end
 
+    # Starts the process of counting lines of code
+    #
+    # Example:
+    # >> LOCReader.run "./my_project/*", ".rb"
+    #
+    # Arguments:
+    #   dir: (String)  The directory you want to search. Include /* on the end.
+    #   ext: (String)  List of file extensions. Comma seperated
+
 		def run(dir, ext = "")
 			unless ext == ""
 				@ext = ext.split(',')
@@ -63,6 +72,14 @@ module HMSTools
 			get_files dir
 			@total = @lines - @blank_lines
 		end
+		
+		# Grabs the directory and loops through the files. This is recursive to grab all sub directories
+		#
+		# Example
+		# >> LOCReader.get_files "./my_project/*"
+		#
+		# Arguments:
+		#   dir: (String)  The directory you want to search. Include /* on the end.
 
 		def get_files(dir)
 	
@@ -83,6 +100,15 @@ module HMSTools
 			end
 		end
 
+    # Reads the files and counts the lines
+    #
+    # Example
+    # >> LOCReader.read_lines "./helloworld.rb"
+    # => Hello World
+    #
+    # Arguments:
+    #   file: (String)
+
 		def read_lines(file)
 			begin
 				ofile = File.new(file, "r")
@@ -98,14 +124,33 @@ module HMSTools
 			end
 		end
 
+    # Returns an array of the number of files, total lines, blank lines, and actual lines
+    # Example
+    # >> LOCReader.print_array
+    # => [3, 90, 10, 100]
+
 		def print_array
 			[@num_files, @total, @blank_lines, @lines]
 		end
+		
+		# Returns a hash of the number of files, total lines, blank lines, and actual lines
+    # Example
+    # >> LOCReader.print_hash
+    # => {"files" => 3, "loc" => 90, "bloc" => 10, "lines" => 100}
 
 		def print_hash
 			{"files" => @num_files, "loc" => @total, "bloc" => @blank_lines, "lines" => @lines}
 		end
 
+
+  	# prints the number of files, total lines, blank lines, and actual lines
+    # Example
+    # >> LOCReader.print_output
+    # => Files 3
+    # => Lines of Code: 90
+    # => Blank Lines: 10
+    # => Total Lines: 10
+    
 		def print_output
 			print "Files: #@num_files \n"
 			print "Lines of Code: #@total \n"
@@ -117,11 +162,26 @@ module HMSTools
 
 	class XFDL
 
+    # Base64 decodes a given string
+    # Example
+    # >> XFDL.b64decode_it "randommishmash"
+    # => "Not So Random Mish Mash"
+    #
+    # Arguments
+    #   contents: (String)
 		def b64decode_it(contents = nil)
 			x = Base64.decode64(contents)
 			return x
 		end
 
+    # Base64 encodes a given string
+    # Example
+    # >> XFDL.b64eecode_it "Not So Random Mish Mash"
+    # => "randommishmash"
+    #
+    # Arguments
+    #   contents: (String)
+    
 		def b64encode_it(contents = nil)
 			unless contents.nil?
 				x = Base64.encode64(contents)
@@ -129,6 +189,16 @@ module HMSTools
 			end
 		end
 
+
+    # Searches for all xml files in a directory and turns them into xfdl files
+    # Example
+    # >> XFDL.build_and_write_xfdl_from_directory "myxmlfiles/*", "myxfdlfiles"
+    # => Packaging Form1.xml to Form1.xfdl - Complete
+    # => 1 out of 1 were XML files and processed to the XFDL format!
+    #
+    # Arguments
+    #   xmldirectory: (String)  A directory where all the xml files are stored
+    #   xfdldirectory: (String)  A directory where all the xfdl files will be written to
 		def build_and_write_xfdl_from_directory(xmldirectory, xfdldirectory)
 			@files = Dir.glob(xmldirectory)
 			numfiles = 0
@@ -148,6 +218,14 @@ module HMSTools
 			print "\n" + numxmlfiles.to_s + " out of " + numfiles.to_s + " were XML files and processed to the XFDL format!"
 		end
 
+
+    # Turns an xml file into an xfdl file
+    # Example
+    # >> XFDL.build_and_write_xfdl_from_xml "myform.xml", "myform.xfdl"
+    #
+    # Arguments
+    #   xmlfile: (String)  The xml file you want to convert
+    #   xfdlfile: (String)  The name of the xfdl file you want to save.
 		def build_and_write_xfdl_from_xml(xmlfile, xfdlfile)
 			# 1. Gzip
 			# 2. Base64
@@ -176,6 +254,13 @@ module HMSTools
 
 		end
 
+    # Turns an xfdl file into an xml file
+    # Example
+    # >> XFDL.deconstruct_and_write_xml "myform.xfdl", "myform.xml"
+    #
+    # Arguments
+    #   old_filename: (String)  The xfdl file you want to convert
+    #   new_filename: (String)  The name of the xml file
 		def deconstruct_and_write_xml(old_filename, new_filename)
 
 			if File.exists?(old_filename)
@@ -197,6 +282,12 @@ module HMSTools
 		end
 
 	
+	  # Turns an xfdl file into an xml file
+    # Example
+    # >> XFDL.get_xml "Some Fun Stuff"
+    #
+    # Arguments
+    #   contents: (String)  The base 64 encoded string after opening the xfdl file and stripping the content type information
 		def get_xml(contents)
 			b64_decoded = ''
 			xml_contents = ''
